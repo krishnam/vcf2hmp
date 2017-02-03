@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+__author__ == 'srikrishnamohan@gmail.com'
 import sys
 from pysam import VariantFile
 def vcf2hapmap(fname):
