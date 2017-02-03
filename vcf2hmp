@@ -1,6 +1,5 @@
-#!/test/projects/Programs/anaconda3/bin/python
+#!/usr/bin/env python
 import sys
-from tqdm import tqdm
 from pysam import VariantFile
 def vcf2hapmap(fname):
     """
