@@ -1,0 +1,44 @@
+#!/test/projects/Programs/anaconda3/bin/python
+import sys
+from tqdm import tqdm
+from pysam import VariantFile
+def vcf2hapmap(fname):
+    """
+    convert multi-sample VCF format file to HAPMAP format
+    """
+    ofname = fname.rsplit('.',1)[0] + '.hmp.txt'
+    ofh = open(ofname, 'w')
+    vcf = VariantFile(fname)
+    samples = list(vcf.header.samples)
+    header = 'rs#    alleles    chrom     pos      strand    assembly#    center    protLSID    assayLSID    panelLSID    QCcode'.split()
+    header.extend(samples) 
+    print('\t'.join(header), file=ofh)
+    count = 1
+    for rec in vcf.fetch():
+        if rec.alts == None: continue
+        h = ['rs'+str(count), '/'.join(rec.alleles), rec.chrom, str(rec.pos),'.','NA','NA','NA','NA','NA','NA']
+        #ref_allele = rec.ref
+        #rec_alts = rec.alts
+        gt = rec.format['GT']
+        alleles = rec.alleles
+        gts = []
+        for sample,v in rec.samples.iteritems():
+            a,b = v['GT']
+            if a == None or b == None:
+                gt = '--'
+            else:
+                gt = ''.join([alleles[a],alleles[b]])    
+            gts.append(gt)
+        h.extend(gts)
+        print('\t'.join(h),  file=ofh)
+        count += 1 
+    vcf.close()
+    ofh.close()
+
+if __name__ == '__main__':
+    try:
+        vcf2hapmap(sys.argv[1])
+    except:
+        print('''Usage: vcf2hmp <input.vcf.gz>
+        Note: <input.vcf.gz> can contain  one or many samples
+        Contact: srikrishnamohan@gmail.com''')
