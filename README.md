@@ -1,5 +1,5 @@
 # vcf2hmp
-convert VCF to HMP format
+convert VCF to Hapmap format
 ### Usage
 ```
 vcf2hmp A.vcf.gz 
